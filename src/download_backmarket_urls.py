@@ -5,7 +5,7 @@ import requests
 import pickle
 
 BASE_URL = "https://www.backmarket.com"
-PICKLE_FOLDER = "scraper_2_1/pickles"
+PICKLE_FOLDER = os.path.join('/Users/jaceysimpson/Vscode/scraper_2_1', 'pickles')
 
 class Download_URLS:
     def __init__(self, url: str = BASE_URL):

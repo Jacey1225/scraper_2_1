@@ -38,13 +38,22 @@ class TestDownloadBackmarketUrls:
 # TESTING ELEMENT CLASS #
 #########################
 
+    @pytest.fixture
     def de(self):
         return Download_Elements()
 
-    @pytest.mark.selected
     def test_soup_fetching(self, de):
         soup_list = de.fetch_soup_via_content()
         print(soup_list)
 
         assert soup_list is not None
 
+    @pytest.mark.selected
+    def test_soup_saving(self, de):
+        filename = 'soup_data'
+        max_age = 3 #days
+        
+        soup_data = de.verify_soup_data_age(filename, max_age)
+        print(soup_data)
+
+        assert soup_data is not None
