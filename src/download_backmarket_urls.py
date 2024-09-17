@@ -63,6 +63,17 @@ class Download_URLS:
 
         return href_urls
 
+    def add_pages(self, href_urls, max_pages=4):
+        #Adds additional url page links to expand search results
+        count = 0
+        pages = []
+        for url in href_urls:
+            for count in range(max_pages):
+                page = str(url) + f'?p={count}'
+                pages.append(page)
+
+        return pages  
+
     # --vv--
     # Downloading url list via pickle
 
@@ -70,7 +81,8 @@ class Download_URLS:
         # reruns the program if the value returned from def load_data is None
 
         main_element = self.fetch_main_page_element()
-        return self.store_href_addresses(main_element)
+        href_urls = self.store_href_addresses(main_element)
+        return self.add_pages(href_urls)
 
     def pickle_url_data(self, filename, url_data):
         # Saves data into a file via pickle.dump()

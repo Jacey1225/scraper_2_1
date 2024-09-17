@@ -48,12 +48,26 @@ class TestDownloadBackmarketUrls:
 
         assert soup_list is not None
 
-    @pytest.mark.selected
+    
     def test_soup_saving(self, de):
         filename = 'soup_data'
         max_age = 3 #days
-        
+
         soup_data = de.verify_soup_data_age(filename, max_age)
         print(soup_data)
 
         assert soup_data is not None
+    
+    @pytest.mark.selected
+    def test_element_saving(self, de):
+        max_age = 3 #days
+        
+        soup_filename = 'soup_data'
+        element_filename = 'element_data'
+
+        soup_data = de.verify_soup_data_age(soup_filename, max_age)
+
+        element_data = de.verify_element_data_age(element_filename, max_age, soup_data)
+        print(element_data)
+
+        assert element_data is not None
