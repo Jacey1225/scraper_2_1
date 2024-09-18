@@ -102,10 +102,7 @@ class TestDownloadBackmarketUrls:
 
     @pytest.mark.selected
     def test_specifics_saving(self, dp):
-        filename = 'product_specifics_data'
-        max_age = 3 #days
-
-        product_specifics = dp.verify_specifics_age(filename, max_age)
+        product_specifics = dp.save_product_specifics()
         print(product_specifics)
 
         assert product_specifics is not None
