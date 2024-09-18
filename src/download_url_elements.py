@@ -96,9 +96,11 @@ class Download_Elements:
         #rerunning program if element data is None
         element_data = None
 
+        #if there is valid data in soup_data...create an instance of element_data
         if soup_data is not None:
             element_data = self.extend_elements_via_soup_data(soup_data)
 
+        #if not None...return data
         if element_data and len(element_data) > 0:
             return element_data
         else:
@@ -106,10 +108,12 @@ class Download_Elements:
             return None
 
     def save_element_data(self):
+        #using Pickle_Data...locally save data to a file path(filename)
         filename = 'element_data'
         max_age = 3 # days
         function = lambda: self.element_function(self.save_soup_data())
-
+        
+        #using variables from above create a class instance and call the function
         sed = Pickle_Data(filename, max_age, function)
         return sed.verify_data_age()
 

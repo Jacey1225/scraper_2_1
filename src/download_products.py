@@ -45,6 +45,7 @@ class Download_Products:
         #uses the data and both helper methods above to create a new list of data holding a stripped version of the product details
         strip_products = []
         for product in self.data:
+            #find title and price via helper methods
             title = self.find_title(product)
             price = self.find_price(product)
             if title and price:
@@ -66,9 +67,11 @@ class Download_Products:
             return product_specifics
     
     def save_product_specifics(self):
+        #using Pickle_Data...locally save data to a file path(filename)
         filename = 'product_specifics_data'
         max_age = 3 #days
         function = self.product_function
 
+        #using variables from above create a class instance and call the function
         spd = Pickle_Data(filename, max_age, function)
         return spd.verify_data_age()
