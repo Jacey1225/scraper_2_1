@@ -1,6 +1,7 @@
 import pytest
 from src.download_backmarket_urls import Download_URLS
 from src.download_url_elements import Download_Elements
+from src.download_products import Download_Products
 
 
 class TestDownloadBackmarketUrls:
@@ -57,8 +58,20 @@ class TestDownloadBackmarketUrls:
         print(soup_data)
 
         assert soup_data is not None
+
     
-    @pytest.mark.selected
+    def test_element_fetching(self, de):
+        filename = 'soup_data'
+        max_age = 3 #days
+
+        soup_data = de.verify_soup_data_age(filename, max_age)
+
+        element_data = de.extend_elements_via_soup_data(soup_data)
+        print(element_data)
+
+        assert element_data is not None
+
+    
     def test_element_saving(self, de):
         max_age = 3 #days
         
@@ -66,8 +79,33 @@ class TestDownloadBackmarketUrls:
         element_filename = 'element_data'
 
         soup_data = de.verify_soup_data_age(soup_filename, max_age)
-
-        element_data = de.verify_element_data_age(element_filename, max_age, soup_data)
-        print(element_data)
+        if soup_data:
+            element_data = de.verify_element_data_age(element_filename, max_age, soup_data)
+            print(element_data)
 
         assert element_data is not None
+
+#########################
+# TESTING PRODUCT CLASS #
+#########################
+
+    @pytest.fixture
+    def dp(self):
+        return Download_Products()
+
+    
+    def test_price_title_fetching(self, dp):
+        product_specifics = dp.fetch_product_specifics()
+        print(product_specifics)
+
+        assert product_specifics is not None
+
+    @pytest.mark.selected
+    def test_specifics_saving(self, dp):
+        filename = 'product_specifics_data'
+        max_age = 3 #days
+
+        product_specifics = dp.verify_specifics_age(filename, max_age)
+        print(product_specifics)
+
+        assert product_specifics is not None
