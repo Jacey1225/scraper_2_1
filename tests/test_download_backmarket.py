@@ -2,6 +2,7 @@ import pytest
 from src.download_backmarket_urls import Download_URLS
 from src.download_url_elements import Download_Elements
 from src.download_products import Download_Products
+from src.eBay_urls import eBay_URLS
 
 
 class TestDownloadBackmarketUrls:
@@ -100,9 +101,39 @@ class TestDownloadBackmarketUrls:
 
         assert product_specifics is not None
 
-    @pytest.mark.selected
+    
     def test_specifics_saving(self, dp):
         product_specifics = dp.save_product_specifics()
         print(product_specifics)
 
         assert product_specifics is not None
+    
+#####################
+# TESTING URL CLASS #
+#####################
+
+    @pytest.fixture
+    def deu(self):
+        return eBay_URLS()
+    
+    
+    def test_url_creation(self, deu):
+        product_name = 'Apple Watch Series 5 (2019) GPS 44 mm'
+        url = deu.create_url(product_name)
+        print(url)
+
+        assert url is not None
+    
+    
+    def test_data_with_url_creation(self, deu):
+        eBay_urls = deu.fetch_all_urls()
+        print(eBay_urls)
+
+        assert eBay_urls is not None
+
+    @pytest.mark.selected
+    def test_eBay_url_saving(self, deu):
+        save_eBay_urls = deu.save_eBay_url_data()
+        print(save_eBay_urls)
+
+        assert save_eBay_urls is not None

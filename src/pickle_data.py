@@ -55,7 +55,7 @@ class Pickle_Data:
 
         #if the age limit is not yet exceeded, return data...else return None
         if age <= self.max_age:
-            print('age acceepted')
+            print('age accepted')
             return data
         else:
             print('age exceeded')
