@@ -1,9 +1,5 @@
 from src.download_products import Download_Products
 from src.pickle_data import Pickle_Data
-from bs4 import BeautifulSoup
-import requests
-import time
-import os
 
 dp = Download_Products()
 DATA = dp.save_product_specifics()
@@ -49,10 +45,12 @@ class eBay_URLS:
 #########################
 
     def eBay_url_function(self):
+        #if data is None reload data
         eBay_urls = self.fetch_all_urls()
         return eBay_urls
 
     def save_eBay_url_data(self):
+        #save data via Pickle_Data class
         filename = 'eBay_urls'
         max_age = 3 #days
         function = self.eBay_url_function

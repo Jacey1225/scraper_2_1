@@ -21,14 +21,25 @@ class Pickle_Data:
         self.max_age = max_age
         self.function = function
 
+    def convert_to_string(self, data):
+        #converts all data of BeautifulSoup type to a string
+        processed_data = []
+        for item in data:
+            processed_data.append(str(item))
+
+        return processed_data
+
     def pickle_data(self, data):
         #saving data via pickle.dump()
         print(f'saving data {self.filename}')
         file_path = os.path.join(directory, self.filename)
 
+        #converting data into a string before pickling to avoid complexities and may cause recursion
+        processed_data = self.convert_to_string(data)
+
         #with open as writing 
         with open(file_path, 'wb') as f:
-            pickle.dump((data, time.time()), f)
+            pickle.dump((processed_data, time.time()), f)
     
     def age_variable(self, timestamp):
         #creating an age instance to track the last time the code was ran

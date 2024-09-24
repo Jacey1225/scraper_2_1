@@ -2,7 +2,8 @@ import pytest
 from src.download_backmarket_urls import Download_URLS
 from src.download_url_elements import Download_Elements
 from src.download_products import Download_Products
-from src.eBay_urls import eBay_URLS
+'''from src.eBay_urls import eBay_URLS
+from src.eBay_elements import eBay_Elements'''
 
 
 class TestDownloadBackmarketUrls:
@@ -10,31 +11,28 @@ class TestDownloadBackmarketUrls:
     @pytest.fixture
     def du(self):
         return Download_URLS()
+    
+    
+    def test_backmarket_element(self, du):
+        element_data = du.fetch_main_page_element()
+        print(element_data)
 
-    def test_fetch_main_page_element(self, du):
-        main_page = "https://www.backmarket.com/en-us"
-        main_element = du.fetch_main_page_element(main_page)
-        assert main_element is not None
+        assert element_data is not None
 
-    def test_store_href_addresses(self, du):
-        main_element = ""  # Need to mock this main element
-        assert du.store_href_addresses(main_element) is not None
+    
+    def test_href_addresses(self, du):
+        main_element = du.fetch_main_page_element()
+        href_addresses = du.store_href_addresses(main_element)
+        print(href_addresses)
 
-    def test_stored_urls():
-        # tester method for retrieving url data from the backmarket homepage
-        main_page = "https://www.backmarket.com/en-us"
-        download = Download_URLS(url=main_page)
-        main_element = download.fetch_main_page_element()
-        print(download.store_href_addresses())
-        assert main_element is not None
+        assert href_addresses is not None
 
     def test_url_saving(self, du):
-            filename = "url_data"
-            max_age = 3  # Maximum days that the code can be used up until the next refresh
+        url_data = du.save_url_data()
+        print(url_data)
 
-            url_data = du.verify_data_age(filename, max_age)
-            print(url_data)
-            assert url_data is not None
+        assert url_data is not None
+    
 
 #########################
 # TESTING ELEMENT CLASS #
@@ -44,6 +42,7 @@ class TestDownloadBackmarketUrls:
     def de(self):
         return Download_Elements()
 
+    
     def test_soup_fetching(self, de):
         soup_list = de.fetch_soup_via_content()
         print(soup_list)
@@ -52,19 +51,13 @@ class TestDownloadBackmarketUrls:
 
     
     def test_soup_saving(self, de):
-        filename = 'soup_data'
-        max_age = 3 #days
-
-        soup_data = de.verify_soup_data_age(filename, max_age)
+        soup_data = de.save_soup_data()
         print(soup_data)
 
         assert soup_data is not None
 
     
     def test_element_fetching(self, de):
-        filename = 'soup_data'
-        max_age = 3 #days
-
         soup_data = de.verify_soup_data_age(filename, max_age)
 
         element_data = de.extend_elements_via_soup_data(soup_data)
@@ -74,15 +67,8 @@ class TestDownloadBackmarketUrls:
 
     
     def test_element_saving(self, de):
-        max_age = 3 #days
-        
-        soup_filename = 'soup_data'
-        element_filename = 'element_data'
-
-        soup_data = de.verify_soup_data_age(soup_filename, max_age)
-        if soup_data:
-            element_data = de.verify_element_data_age(element_filename, max_age, soup_data)
-            print(element_data)
+        element_data = de.save_element_data()
+        print(element_data)
 
         assert element_data is not None
 
@@ -101,7 +87,7 @@ class TestDownloadBackmarketUrls:
 
         assert product_specifics is not None
 
-    
+    @pytest.mark.selected
     def test_specifics_saving(self, dp):
         product_specifics = dp.save_product_specifics()
         print(product_specifics)
@@ -112,7 +98,7 @@ class TestDownloadBackmarketUrls:
 # TESTING URL CLASS #
 #####################
 
-    @pytest.fixture
+    '''@pytest.fixture
     def deu(self):
         return eBay_URLS()
     
@@ -131,9 +117,22 @@ class TestDownloadBackmarketUrls:
 
         assert eBay_urls is not None
 
-    @pytest.mark.selected
+    
     def test_eBay_url_saving(self, deu):
         save_eBay_urls = deu.save_eBay_url_data()
         print(save_eBay_urls)
 
         assert save_eBay_urls is not None
+
+######################
+# TEST ELEMENT CLASS #
+######################
+    @pytest.fixture
+    def dee(self):
+        return eBay_Elements()
+
+    def test_eBay_soup_saving(self, dee):
+        eBay_soup_data = dee.save_eBay_soup_data()
+        print(eBay_soup_data)
+
+        assert eBay_soup_data is not None'''

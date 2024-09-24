@@ -53,10 +53,12 @@ class Download_Elements:
 #########################
     def soup_function(self):
         #runs the program again if the result of soup_data is None
-        return self.fetch_soup_via_content()
+        soup_data = self.fetch_soup_via_content()
+        if soup_data:
+            return soup_data
 
     def save_soup_data(self):
-        filename = 'soup_data'
+        filename = 'backmarket_soup_data'
         max_age = 3 #days
         function = self.soup_function
 
@@ -70,7 +72,9 @@ class Download_Elements:
 
     def fetch_element(self, soup):
         #finds all content containing the same parent calss
+        soup = BeautifulSoup(soup, 'html.parser')
         raw_elements = soup.find_all('a', class_='shadow-short rounded-lg relative block no-underline motion-safe:transition motion-safe:duration-200 motion-safe:ease-in bg-float-default-low focus-visible-outline-default-hi cursor-pointer hover:bg-float-default-low-hover hover:shadow-long h-full overflow-hidden text-left')
+        
         #converts raw elements to a text list for serializable data
         element_data = [{'text': a.get_text(strip = True)} for a in raw_elements]
         
@@ -82,9 +86,10 @@ class Download_Elements:
 
         #loops through soup data to find elements
         for soup in soup_data:
-            element = self.fetch_element(soup)
-            if element:
-                all_elements.extend(element)
+            if soup is not None:
+                element = self.fetch_element(soup)
+                if element:
+                    all_elements.extend(element)
         
         return all_elements
     
@@ -109,12 +114,15 @@ class Download_Elements:
 
     def save_element_data(self):
         #using Pickle_Data...locally save data to a file path(filename)
-        filename = 'element_data'
+        filename = 'backmarket_element_data'
         max_age = 3 # days
-        function = lambda: self.element_function(self.save_soup_data())
+
+        soup_data = self.save_soup_data()
+        if soup_data is not None:
+            function = lambda: self.element_function(soup_data)
         
-        #using variables from above create a class instance and call the function
-        sed = Pickle_Data(filename, max_age, function)
-        return sed.verify_data_age()
+            #using variables from above create a class instance and call the function
+            sed = Pickle_Data(filename, max_age, function)
+            return sed.verify_data_age()
 
     

@@ -19,7 +19,7 @@ class Download_URLS:
     # This class downlaods a set of found redirect urls from a page in backmarket
     def create_soup_variable(self, content):
         # Converts content into readable/valid formatting
-        return BeautifulSoup(content, "lxml")
+        return BeautifulSoup(content, "html.parser")
 
     def create_element_variable(self, soup, header, header_class):
         # Returns an element containing all the desired content
@@ -33,12 +33,13 @@ class Download_URLS:
 
     def fetch_main_page_element(self):
         # Returns the element of a given url
+        print('fetching main page content')
         content = self.get_response_content()
         soup = self.create_soup_variable(content)
         
 
-        element = self.create_element_variable(soup, "li", ("md:col-span-3 flex", "md:col-span-3 col-span-2 flex"))
 
+        element = self.create_element_variable(soup, "li", "col-span-1 md:col-span-1 flex")
         if element is not None:
             return element
         else:
@@ -48,23 +49,26 @@ class Download_URLS:
     def store_href_addresses(self, main_element):
         # This method will search through the main element to find sections that contain an href address.
         # Whenever one is located, it will store it in a list and return that list back
+        print('fetching all href addresses')
+
         href_urls = []
         for item in main_element:
-            href_container = item.find(
-                "a",
-                class_="shadow-short rounded-lg relative block no-underline motion-safe:transition motion-safe:duration-200 motion-safe:ease-in bg-float-default-low focus-visible-outline-default-hi cursor-pointer hover:bg-float-default-low-hover hover:shadow-long inline-block min-h-[13rem] w-full sm:min-h-[13.5rem] h-320",
-            )
-            href_address = href_container.get("href")
-            if not href_address is None:
-                href_urls.append(str(self.url + href_address))
-            else:
-                print("no href address found")
-                continue
+            href_container = item.find("a", href = True)
+            if href_container is not None:
+                href_address = href_container.get("href")
+
+                if href_address is not None:
+                    print(f'address: {href_address}')
+                    href_urls.append(str(self.url + href_address))
+                else:
+                    print("no href address found")
+                    continue
 
         return href_urls
 
     def add_pages(self, href_urls, max_pages=4):
         #Adds additional url page links to expand search results
+        print('adding pages')
         count = 0
         pages = []
         for url in href_urls:
@@ -85,10 +89,11 @@ class Download_URLS:
         return self.add_pages(href_urls)
 
     def save_url_data(self):
-        filename = 'url_data'
+        filename = 'backmarket_url_data'
         max_age = 3 #days
         function = self.function
 
         #sud == save url data
         sud = Pickle_Data(filename, max_age, function)
         return sud.verify_data_age()
+
