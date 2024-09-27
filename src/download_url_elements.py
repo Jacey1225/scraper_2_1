@@ -44,7 +44,7 @@ class Download_Elements:
         for content in self.get_response_content():
             soup = self.get_soup_variable(content)
             if soup:
-                soup_list.extend(soup)
+                soup_list.append(str(soup))
         
         return soup_list
 
@@ -70,13 +70,24 @@ class Download_Elements:
 # RETRIEVING ELEMENT DATA #
 ########################### 
 
+    def serialize_elements(self, raw_elements):
+        #converts raw elements to a text list for serializable data
+        element_data = [] #stores serializeable element data
+        for element in raw_elements:
+            element_text = element.get_text()
+            if element_text:
+                element_data.append(element_text)
+        
+        return element_data
+    
     def fetch_element(self, soup):
-        #finds all content containing the same parent calss
+        #finds all content containing the same parent class
+        #soup = BeautifulSoup(soup, 'html.parser')
         soup = BeautifulSoup(soup, 'html.parser')
         raw_elements = soup.find_all('a', class_='shadow-short rounded-lg relative block no-underline motion-safe:transition motion-safe:duration-200 motion-safe:ease-in bg-float-default-low focus-visible-outline-default-hi cursor-pointer hover:bg-float-default-low-hover hover:shadow-long h-full overflow-hidden text-left')
         
-        #converts raw elements to a text list for serializable data
-        element_data = [{'text': a.get_text(strip = True)} for a in raw_elements]
+        #calls serialize_elements() to properly pickle data
+        element_data = self.serialize_elements(raw_elements)
         
         return element_data
 
@@ -89,7 +100,7 @@ class Download_Elements:
             if soup is not None:
                 element = self.fetch_element(soup)
                 if element:
-                    all_elements.extend(element)
+                    all_elements.append(element)
         
         return all_elements
     

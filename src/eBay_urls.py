@@ -31,11 +31,10 @@ class eBay_URLS:
         #returns a new list of urls
         print('generating eBay urls')
 
-
         eBay_urls = []
-        for title, price in self.data:
-            url = self.create_url(title)
-            if url:
+        for product in self.data:
+            if product[0] is not None:
+                url = self.create_url(product[0])
                 eBay_urls.append(url)
 
         return eBay_urls

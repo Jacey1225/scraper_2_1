@@ -2,8 +2,8 @@ import pytest
 from src.download_backmarket_urls import Download_URLS
 from src.download_url_elements import Download_Elements
 from src.download_products import Download_Products
-'''from src.eBay_urls import eBay_URLS
-from src.eBay_elements import eBay_Elements'''
+from src.eBay_urls import eBay_URLS
+from src.eBay_elements import eBay_Elements
 
 
 class TestDownloadBackmarketUrls:
@@ -87,7 +87,7 @@ class TestDownloadBackmarketUrls:
 
         assert product_specifics is not None
 
-    @pytest.mark.selected
+    
     def test_specifics_saving(self, dp):
         product_specifics = dp.save_product_specifics()
         print(product_specifics)
@@ -98,41 +98,41 @@ class TestDownloadBackmarketUrls:
 # TESTING URL CLASS #
 #####################
 
-    '''@pytest.fixture
-    def deu(self):
+    @pytest.fixture
+    def eu(self):
         return eBay_URLS()
-    
-    
-    def test_url_creation(self, deu):
-        product_name = 'Apple Watch Series 5 (2019) GPS 44 mm'
-        url = deu.create_url(product_name)
-        print(url)
 
-        assert url is not None
+    
+    def test_url_fetching(self, eu):
+        eBay_URLS = eu.fetch_all_urls()
+        print(eBay_URLS)
+
+        assert eBay_URLS is not None
     
     
-    def test_data_with_url_creation(self, deu):
-        eBay_urls = deu.fetch_all_urls()
+    def test_eBay_url_saving(self, eu):
+        eBay_urls = eu.save_eBay_url_data()
         print(eBay_urls)
 
         assert eBay_urls is not None
-
     
-    def test_eBay_url_saving(self, deu):
-        save_eBay_urls = deu.save_eBay_url_data()
-        print(save_eBay_urls)
-
-        assert save_eBay_urls is not None
-
 ######################
 # TEST ELEMENT CLASS #
 ######################
     @pytest.fixture
-    def dee(self):
+    def ee(self):
         return eBay_Elements()
 
-    def test_eBay_soup_saving(self, dee):
-        eBay_soup_data = dee.save_eBay_soup_data()
-        print(eBay_soup_data)
+    
+    def test_eBay_soup_fetching(self, ee):
+        eBay_soups = ee.fetch_all_soups()
+        print(eBay_soups)
 
-        assert eBay_soup_data is not None'''
+        assert eBay_soups is not None
+
+    @pytest.mark.selected
+    def test_eBay_soup_saving(self, ee):
+        eBay_soups = ee.save_eBay_soup_data()
+        print(eBay_soups)
+
+        assert eBay_soups is not None

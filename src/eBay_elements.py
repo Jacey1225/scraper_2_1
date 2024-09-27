@@ -19,22 +19,31 @@ class eBay_Elements:
         self.data = data
 
     def get_request(self, url):
-        response = requests.get(url)
+        #forms a content variable via requests.get >> url
+        response = requests.get(url) #request session
         if response.status_code == 200:
-            return response.text
+            return response.text #return content
+        else:
+            print(f'error running request for {url}')
 
-    def get_soup(self, raw_content):
-        soup = BeautifulSoup(raw_content, 'html.parser')
+    def get_soup(self, url):
+        #BeatifulSoup >> convert content as html.parser
+        raw_content = self.get_request(url) #response content
+        soup = BeautifulSoup(raw_content, 'html.parser') #html parser 
         if soup:
-            return soup
+            return str(soup)
+        else:
+            print(f'cannot complete conversion for {url}')
 
     def fetch_all_soups(self):
-        soup_data = []
+        #get soup content via url data in eBay_urls.py 
+        soup_data = [] #empty soup data list
 
         for url in self.data:
-            content = self.get_request(url)
-            soup = self.get_soup(content)
+            print(f'getting soup for {url}')
+            soup = self.get_soup(url) #specified url soup
             if soup:
+                print('pass')
                 soup_data.append(soup)
 
         return soup_data

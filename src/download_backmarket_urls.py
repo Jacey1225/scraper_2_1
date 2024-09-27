@@ -73,8 +73,8 @@ class Download_URLS:
         pages = []
         for url in href_urls:
             for count in range(max_pages):
-                page = str(url) + f'?p={count}'
-                pages.append(page)
+                page = url + f'?p={count}'
+                pages.append(str(page))
 
         return pages  
 

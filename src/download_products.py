@@ -29,7 +29,6 @@ class Download_Products:
     def split_title(self, product):
         #pre-assumed titles of products based on given element data
         prefixes = {'iPhone', 'MacBook', 'iPad', 'Nintendo', 'PlayStation', 'Switch', 'Xbox'}
-        title = None #empty title instance
 
         for prefix in prefixes:
             if product.find(prefix) != -1:
@@ -38,16 +37,15 @@ class Download_Products:
                 if end_title == -1:
                     end_title = len(product) #backup index if end_title cannot be found
                 
-                title = product[start_title:end_title]
-        
-        if title is not None:
-            return title
-        else:
-            print(f'title not found{product}')
-        
+                title = product[start_title:end_title - 1]
+                
+                if title is not None:
+                    return title
+                else:
+                    print(f'title not found{product}')
+                    return 'unkown'
+                    
     def split_price(self, product):
-        price = []
-
         start_price = product.rfind('$') #beginning index of price
         end_price = product.rfind('.') #ending index of price
         if end_price == -1:
@@ -58,19 +56,22 @@ class Download_Products:
         if price is not None:
             return price
         else:
+            return '$0.0'
             print(f'price not found {product}') #printing values not found 
 
     def fetch_product_specifics(self):
         #uses the data and both helper methods above to create a new list of data holding a stripped version of the product details
         strip_products = []
-        for product in self.data:
-            #find title and price via helper method
-            title = self.split_title(product) #stripped title string
-            price = self.split_price(product) #stripped price string
+        print(f'finding titles and prices in element_data: {len(self.data)}')
+        for item in self.data:
+            for product in item:
+                #find title and price via helper methods
+                title = self.split_title(product) #stripped title string
+                price = self.split_price(product) #stripped price string
 
-            attributes = (title, price)
-            strip_products.append(attributes)
-            
+                attributes = (title, price) #tuple value 
+                strip_products.append(attributes)
+        
         print(f'Length of element data: {len(self.data)}')
         print(f'Length of stripped data: {len(strip_products)}')
         return strip_products
