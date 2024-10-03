@@ -4,6 +4,7 @@ from src.download_url_elements import Download_Elements
 from src.download_products import Download_Products
 from src.eBay_urls import eBay_URLS
 from src.eBay_elements import eBay_Elements
+from src.eBay_products import eBay_Products
 
 
 class TestDownloadBackmarketUrls:
@@ -130,9 +131,47 @@ class TestDownloadBackmarketUrls:
 
         assert eBay_soups is not None
 
-    @pytest.mark.selected
+    
     def test_eBay_soup_saving(self, ee):
         eBay_soups = ee.save_eBay_soup_data()
         print(eBay_soups)
 
         assert eBay_soups is not None
+
+    
+    def test_ebay_element_fetching(self, ee):
+        eBay_elements = ee.extend_elements_via_soup_data()
+        print(eBay_elements)
+
+        assert eBay_elements is not None
+        
+    
+    def test_ebay_element_saving(self, ee):
+        eBay_elements = ee.save_eBay_element_data()
+        print(eBay_elements)
+
+        assert eBay_elements is not None
+
+###########################
+# TEST EBAY PRODUCT CLASS #
+###########################
+    @pytest.fixture
+    def ep(self):
+        return eBay_Products()
+
+    
+    def test_eBay_products(self, ep):
+        eBay_products = ep.attribute_list()
+        print(eBay_products)
+
+        assert eBay_products is not None
+    
+    @pytest.mark.selected
+    def test_attribute_saving(self, ep):
+        new_p_data = ep.save_attributes_data()
+        print(new_p_data)
+
+        assert new_p_data is not None
+    
+    
+    

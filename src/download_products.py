@@ -46,10 +46,10 @@ class Download_Products:
                     return 'unkown'
                     
     def split_price(self, product):
-        start_price = product.rfind('$') #beginning index of price
-        end_price = product.rfind('.') #ending index of price
-        if end_price == -1:
-            end_price = len(product) #backup index if end_price cannot be found
+        start_price = product.find('$') #beginning index of price
+        
+        if start_price != -1:
+            end_price = product.find(".", start_price)
 
         price = product[start_price:end_price]
         
