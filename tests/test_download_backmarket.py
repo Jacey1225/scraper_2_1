@@ -5,6 +5,7 @@ from src.download_products import Download_Products
 from src.eBay_urls import eBay_URLS
 from src.eBay_elements import eBay_Elements
 from src.eBay_products import eBay_Products
+from src.database_conversion import Convert_Data
 
 
 class TestDownloadBackmarketUrls:
@@ -166,12 +167,24 @@ class TestDownloadBackmarketUrls:
 
         assert eBay_products is not None
     
-    @pytest.mark.selected
+    
     def test_attribute_saving(self, ep):
         new_p_data = ep.save_attributes_data()
         print(new_p_data)
 
         assert new_p_data is not None
+
+##################################
+# TEST DATABASE CONVERSION CLASS #
+##################################
+
+    @pytest.fixture
+    def dc(self):
+        return Convert_Data()
     
-    
-    
+    @pytest.mark.selected
+    def test_transformation(self, dc):
+        database = dc.transform_collection()
+        print(database)
+
+        assert database is not None
