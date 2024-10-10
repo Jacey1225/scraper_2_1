@@ -1,11 +1,12 @@
 import pandas as pd
 from bs4 import BeautifulSoup
-from src.pickle_data import Pickle_Data
+from src.save_data import Save_Data
 from src.eBay_elements import eBay_Elements
 from src.download_products import Download_Products
+from src.eBay_urls import eBay_URLS
 
 dp = Download_Products()
-P_DATA = dp.save_product_specifics() #backmarket product attributes (title, price)
+P_DATA = dp.save_product_data() #backmarket product attributes (title, price)
 
 ee = eBay_Elements()
 E_DATA = ee.save_eBay_element_data() #eBay element data for price pulling
@@ -17,6 +18,7 @@ class eBay_Products:
             args:
                 E_DATA(list: eBay elements): Used to process attributes of a product ie. title and price
                 P_DATA(list: Backmarket Products): will be extended to hold an average price of similar eBay products
+                U_DATA(list: Backmarket Product Links): will be extended to hold a redirect link of the buy product
             '''
         self.e_data = e_data
         self.p_data = p_data
@@ -26,12 +28,10 @@ class eBay_Products:
 #################################
 
     def attribute_list(self):
-        new_p_data = self.p_data[:] #p_data copy instance
+        new_p_data = self.p_data[:] #p_data copy instance [(title, price)]
         
-        for i, item in enumerate(self.e_data): #for each in element_data and product_data - extend with an average instance
-            average = item
-            
-            new_p_data[i] = (new_p_data[i], average)
+        for i, item in enumerate(self.e_data): #for each in element_data and product_data - extend a copy of product_data with an average instance [(title, price, average)]            
+            new_p_data[i] = (new_p_data[i], item)
             if new_p_data[i]:
                 print(f'new item: {new_p_data[i]}')
         
@@ -47,9 +47,8 @@ class eBay_Products:
 
     def save_attributes_data(self):
         filename = 'all_product_data'
-        max_age = 3 #days
         function = self.attribute_function
 
-        #sad = Save attribute data
-        sad = Pickle_Data(filename, max_age, function)
-        return sad.verify_data_age()
+        #ad == attribute data
+        ad = Save_Data(filename, function)
+        return ad.fetch_data()

@@ -1,5 +1,5 @@
 from src.download_backmarket_urls import Download_URLS
-from src.pickle_data import Pickle_Data
+from src.save_data import Save_Data
 from bs4 import BeautifulSoup
 import pickle
 import requests 
@@ -59,12 +59,12 @@ class Download_Elements:
 
     def save_soup_data(self):
         filename = 'backmarket_soup_data'
-        max_age = 3 #days
         function = self.soup_function
 
-        #ssd == save soup data
-        ssd = Pickle_Data(filename, max_age, function)
-        return ssd.verify_data_age()
+        #ssd == soup data
+        sd = Save_Data(filename, function)
+        soup_data = sd.fetch_data()
+        return soup_data
 
 ########################### 
 # RETRIEVING ELEMENT DATA #
@@ -126,14 +126,14 @@ class Download_Elements:
     def save_element_data(self):
         #using Pickle_Data...locally save data to a file path(filename)
         filename = 'backmarket_element_data'
-        max_age = 3 # days
 
         soup_data = self.save_soup_data()
-        if soup_data is not None:
-            function = lambda: self.element_function(soup_data)
+        function = lambda: self.element_function(soup_data)
         
-            #using variables from above create a class instance and call the function
-            sed = Pickle_Data(filename, max_age, function)
-            return sed.verify_data_age()
+        #using variables from above create a class instance and call the function
+        ed = Save_Data(filename, function)
+        element_data = ed.fetch_data()
+
+        return element_data
 
     

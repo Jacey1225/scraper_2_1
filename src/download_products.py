@@ -1,5 +1,6 @@
 from src.download_url_elements import Download_Elements
 from src.pickle_data import Pickle_Data
+from src.save_data import Save_Data
 from bs4 import BeautifulSoup
 import requests
 import pickle
@@ -82,16 +83,15 @@ class Download_Products:
 
     def product_function(self):
         #reruns program if specifics_data is None
-        product_specifics = self.fetch_product_specifics()
-        if product_specifics is not None:
-            return product_specifics
+        product_data = self.fetch_product_specifics()
+        if product_data is not None:
+            return product_data
     
-    def save_product_specifics(self):
+    def save_product_data(self):
         #using Pickle_Data...locally save data to a file path(filename)
-        filename = 'product_specifics_data'
-        max_age = 3 #days
+        filename = 'product_data'
         function = self.product_function
 
         #using variables from above create a class instance and call the function
-        spd = Pickle_Data(filename, max_age, function)
-        return spd.verify_data_age()
+        pd = Save_Data(filename, function)
+        return pd.fetch_data()

@@ -1,8 +1,8 @@
 from src.download_products import Download_Products
-from src.pickle_data import Pickle_Data
+from src.save_data import Save_Data
 
 dp = Download_Products()
-DATA = dp.save_product_specifics()
+DATA = dp.save_product_data()
 
 
 class eBay_URLS:
@@ -19,10 +19,11 @@ class eBay_URLS:
         #creates a url using a raw title with character replacements and a base url from eBay
 
         base_url = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p4432023.m570.l1313&_nkw='
+        completed_items = "&rt=nc&LH_Complete=1"
         
         #replaces all characters to enter a valid url
         replacements = raw_title.replace(' ', '+').replace('(', '%28').replace(')', '%29')
-        ebay_url = base_url + replacements
+        ebay_url = base_url + replacements + completed_items
 
         return ebay_url
 
@@ -51,9 +52,8 @@ class eBay_URLS:
     def save_eBay_url_data(self):
         #save data via Pickle_Data class
         filename = 'eBay_urls'
-        max_age = 3 #days
         function = self.eBay_url_function
 
-        seud = Pickle_Data(filename, max_age, function)
-        return seud.verify_data_age()
+        eud = Save_Data(filename, function)
+        return eud.fetch_data()
         

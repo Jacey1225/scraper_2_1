@@ -1,5 +1,6 @@
 from src.eBay_urls import eBay_URLS
-from src.pickle_data import Pickle_Data
+from src.save_data import Save_Data
+from src.eBay_info import eBay_Info
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
@@ -57,12 +58,11 @@ class eBay_Elements:
 
     def save_eBay_soup_data(self):
         filename = 'eBay_soup_data'
-        max_age = 3 #days
         function = self.soup_function
 
-        #sesd == save eBay soup data
-        sesd = Pickle_Data(filename, max_age, function)
-        return sesd.verify_data_age()
+        #esd == eBay soup data
+        esd = Save_Data(filename, function)
+        return esd.fetch_data()
 
 #####################
 # FETCHING ELEMENTS #
@@ -87,59 +87,27 @@ class eBay_Elements:
         if raw_elements:
             return raw_elements
 
-#################
-# FETCH AVERAGE #
-#################
-    def clean_price(self, price: str) -> float:
-        #price cleaning, verifying several instances in which the price string may contain characters that conflict
-        #with type conversion
-        new_price = ""
-        
-        if "$" in price:
-            new_price = price.replace("$", "") #replace "$" with None
-        if "to" in new_price:
-            price_end = new_price.find(".") #create a new idnex to take the first numerical value
-            new_price = new_price[:price_end + 3]
-        if "," in new_price:
-            new_price = new_price.replace(",", "") #if the float is a 4-digit whole number, remove the comma 
-
-        if new_price is None or new_price is '': #if the new_price does not contain a numerical value, return None
-            return None
-        
-        return float(new_price)
-
-    def get_price(self, item):
-        price_element = item.find('span', class_='s-item__price') #in product element, find price element
-        price = price_element.get_text() #isolate the price
-        if price:
-            print(price)
-            return self.clean_price(price)
-
-    def fetch_average(self, elements):
-        price_list = [] #find all prices within an element/page
-        for item in elements:
-            price = self.get_price(item) 
-            price_list.append(price)
-        
-        prices = pd.Series(price_list) #convert the list of prices to a pandas dataset
-        average = prices.mean() #get the average of the dataset
-        return average.round(2) #return and round to the nearest 100th
-
     def gather_averages(self):
         #combines the soup data with the aboe helper methods to create a list of elements as type <String>
-        average_data = []
+        info_data = []
         soup_data = self.save_eBay_soup_data() #soup data 
 
         for soup in soup_data:
             print('fetching raw elements')
             raw_elements = self.fetch_element(soup) #raw_elements fetched from helper method
+            ei = eBay_Info(raw_elements, soup) #seperate class code for fetching prices and popularity rates
 
-            average = self.fetch_average(raw_elements) #get avereage of all elements within a soup
-            if average is not None:
-                average_data.append(average) #all average data within the soup data
 
-        return average_data
-    
+            average = ei.fetch_average() #get average of all elements within a soup
+            pop = ei.fetch_popularity()
+            if average and pop is not None:
+                final_price = ei.get_selling_fees(average)
+                info = (final_price, pop)
+                info_data.append(info) #all average data within the soup data
+
+        return info_data
+
+
 
 ##################
 # ELEMENT SAVING #
@@ -151,13 +119,12 @@ class eBay_Elements:
             return average_data 
 
     def save_eBay_element_data(self):
-        filename = 'eBay_average_data' 
-        max_age = 3 #days
+        filename = 'eBay_info_data' 
         function = self.element_function
 
-        #seed = save eBay soup data
-        seed = Pickle_Data(filename, max_age, function) #verify data age, hold the maximum age of 3 days, if exceeded return None
-        return seed.verify_data_age()
+        #eed == eBay element data
+        eed = Save_Data(filename, function) #verify data age, hold the maximum age of 3 days, if exceeded return None
+        return eed.fetch_data()
 
 
 

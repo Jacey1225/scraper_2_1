@@ -18,18 +18,22 @@ class Convert_Data:
         db = client['eBay_product_database']
         collection = db['eBay_collection']
 
-        return collection
+        return client, collection
 
     def transform_collection(self):
-        collection = self.connect_mongo()
+        client, collection = self.connect_mongo()
+
+        collection.drop()
 
         data_dicts = [
             {
                 "title": item[0][0],
                 "buying price": item[0][1],
-                "selling price": item[1]
+                "selling price": item[1][0],
+                "popularity": item[1][1]
             }
             for item in self.data
         ]
 
-        return collection.insert_many(data_dicts)
+        collection.insert_many(data_dicts)
+        client.close()

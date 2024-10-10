@@ -1,4 +1,5 @@
 from src.pickle_data import Pickle_Data
+from src.save_data import Save_Data
 from bs4 import BeautifulSoup
 import os
 import time
@@ -6,15 +7,18 @@ import requests
 import pickle
 
 BASE_URL = "https://www.backmarket.com"
+CONDITION = "#backbox_grade=10%2520Good"
 
 class Download_URLS:
-    def __init__(self, url: str = BASE_URL):
+    def __init__(self, url: str = BASE_URL, condition: str = CONDITION):
         """Initializes the class with a url
 
         Args:
             url (str, optional): url to scrape. Defaults to BASE_URL.
+            condition (str): condition as a url extension to filter an excellent condition product
         """
         self.url = url
+        self.condition = condition
 
     # This class downlaods a set of found redirect urls from a page in backmarket
     def create_soup_variable(self, content):
@@ -59,7 +63,7 @@ class Download_URLS:
 
                 if href_address is not None:
                     print(f'address: {href_address}')
-                    href_urls.append(str(self.url + href_address))
+                    href_urls.append(str(self.url + href_address + self.condition))
                 else:
                     print("no href address found")
                     continue
@@ -90,11 +94,11 @@ class Download_URLS:
 
     def save_url_data(self):
         filename = 'backmarket_url_data'
-        max_age = 3 #days
         function = self.function
 
         #sud == save url data
-        sud = Pickle_Data(filename, max_age, function)
-        return sud.verify_data_age()
+        sud = Save_Data(filename, function)
+        backmarket_urls = sud.fetch_data()
 
-        
+        return backmarket_urls
+
